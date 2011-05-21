@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+ * GroupMe Client SDK for Android
+ * Copyright (c) 2011 Mindless Dribble, Inc. All Rights Reserved.
+ */
+-->
+<!-- package name must be unique so suffix with "tests" so package loader doesn't ignore us -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.groupme.sdk.tests"
+          android:versionCode="1"
+          android:versionName="1.0">
+    
+    <!-- We add an application tag here just so that we can indicate that
+         this package needs to link against the android.test library,
+         which is needed when building test cases. -->
+    <application>
+        <uses-library android:name="android.test.runner" />
+    </application>
+
+    <!--
+    This declares that this application uses the instrumentation test runner targeting
+    the package of com.groupme.sdk.  To run the tests use the command:
+    "adb shell am instrument -w com.groupme.sdk.tests/android.test.InstrumentationTestRunner"
+    -->
+    <instrumentation android:name="android.test.InstrumentationTestRunner"
+                     android:targetPackage="com.groupme.sdk.tests"
+                     android:label="Tests for GroupMe" />
+
+    <!--
+    This instrumentation runner is responsible for writing out an XML file of JUnit results from the device. The
+    file is extracted by the build script and saved out locally to be read in by the Jenkins CI Server.
+
+    * Note: When using an IDE to locally run tests suites it is recommended you use the default Android runner.
+    -->
+    <instrumentation android:name="com.groupme.sdk.JUnitInstrumentationRunner"
+                     android:targetPackage="com.groupme.sdk.tests"
+                     android:label="Tests for GroupMe SDK" />
+</manifest>

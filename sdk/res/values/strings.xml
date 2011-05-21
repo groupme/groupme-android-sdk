@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+ * Copyright 2011 Mindless Dribble, Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ -->
+<resources>
+    <string name="button_verify">Register Phone Number</string>
+    <string name="button_pin_verify">Validate PIN</string>
+    <string name="button_confirm_create_group">Create Group</string>
+    <string name="button_add_members">Add Group Members</string>
+    <string name="button_finish">Finish</string>
+    <string name="button_open_group_in_groupme">Open GroupMe</string>
+    <string name="button_text_group">Text group</string>
+    <string name="button_call_group">Start conference call</string>
+    <string name="button_post_message">Post</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_new_contact">Add New Contact</string>
+    <string name="button_add">Add</string>
+    
+    <string name="title_enter_phone_number">Enter Your Number</string>
+    <string name="title_enter_pin_number">Enter The PIN Number</string>
+    <string name="title_create_new_group">Create New Group</string>
+    <string name="title_add_group_members">Add Group Members</string>
+
+    <string name="dialog_title_post_message">Post Message</string>
+    <string name="dialog_creating_group">Creating group...</string>
+    <string name="dialog_network_error_title">Network Error</string>
+    <string name="dialog_network_error_desc">A network error occurred. Please try again.</string>
+    <string name="dialog_new_contact_title">New Contact</string>
+    <string name="dialog_error_contact_title">Contact Incomplete</string>
+    <string name="dialog_error_contact_message">Please enter a name and number.</string>
+    
+    <string name="hint_usa_phone">(###) ###-####</string>
+    <string name="hint_pin_number">PIN Number</string>
+    <string name="hint_group_name">Group Name</string>
+    <string name="hint_contact_search">Search Contacts</string>
+    <string name="hint_message_compose">message...</string>
+	<string name="hint_user_name">Your name</string>
+    <string name="hint_contact_name">Name</string>
+    <string name="hint_contact_number">Phone Number</string>
+    
+    <string name="phone_entry_instructions">New and existing GroupMe users must verify their phone number to create groups.</string>
+    <string name="pin_entry_instructions">Enter the PIN we texted to %s</string>
+
+    <string name="authorize_waiting_message">Authorizing phone... please wait.</string>
+    <string name="validation_waiting_message">Validating pin... please wait.</string>
+
+    <string name="dialog_button_confirm">OK</string>
+    <string name="dialog_posting_message">Posting message...</string>
+    
+    <string name="invalid_number_title">Invalid Number</string>
+    <string name="invalid_number_message">You have entered an invalid number. Please try again.</string>
+
+    <string name="label_no_group_members">No Group Members.</string>
+    <string name="label_no_contacts_available">No Contacts Available.</string>
+
+    <string name="link_not_number"><u>Not your number? Click here.</u></string>
+</resources>
