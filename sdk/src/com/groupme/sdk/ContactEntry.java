@@ -21,7 +21,11 @@ import android.os.Parcelable;
 public class ContactEntry implements Parcelable {
     private String mName;
     private String mNumber;
-    
+
+    public ContactEntry() {
+
+    }
+
     public ContactEntry(Parcel in) {
         readFromParcel(in);
     }
@@ -32,6 +36,14 @@ public class ContactEntry implements Parcelable {
 
     public String getNumber() {
         return mNumber;
+    }
+
+    public void setName(String name) {
+        mName = name;
+    }
+
+    public void setNumber(String number) {
+        mNumber = number;
     }
 
     public void writeToParcel(Parcel dest, int flags) {
@@ -48,7 +60,7 @@ public class ContactEntry implements Parcelable {
         return 0;
     }
     
-    public static final Creator CREATOR = new Creator() {
+    public static final Creator<ContactEntry> CREATOR = new Creator<ContactEntry>() {
         public ContactEntry createFromParcel(Parcel in) {
             return new ContactEntry(in);
         }

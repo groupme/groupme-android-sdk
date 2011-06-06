@@ -25,6 +25,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
@@ -33,10 +34,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
+import com.groupme.sdk.ContactEntry;
 import com.groupme.sdk.R;
 import com.groupme.sdk.util.Constants;
 import com.groupme.sdk.widget.ContactListAdapter;
+import com.groupme.sdk.widget.MixedContactListAdapter;
 
 public class AddContactActivity extends ListActivity {
     public static final int DIALOG_ADD_NEW_CONTACT = 0x1;
@@ -47,7 +51,7 @@ public class AddContactActivity extends ListActivity {
     public static final int CONTACTS_SELECTED = 0x1111;
     public static final int CONTACTS_NOT_SELECTED = 0x22222;
     
-    ContactListAdapter mAdapter;
+    MixedContactListAdapter mAdapter;
     ArrayList<String> mManualContacts;
 
     @Override
@@ -69,6 +73,11 @@ public class AddContactActivity extends ListActivity {
         ImageView addGroupButton = (ImageView) findViewById(R.id.header_btn_right);
         addGroupButton.setImageResource(R.drawable.ic_menu_invite_white);
         addGroupButton.setVisibility(View.VISIBLE);
+        addGroupButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                onClickNewContact(view);
+            }
+        });
 
         getListView().setBackgroundColor(Color.TRANSPARENT);
         getListView().setCacheColorHint(Color.TRANSPARENT);
@@ -145,34 +154,36 @@ public class AddContactActivity extends ListActivity {
         String sortOrder = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
 
         Cursor cursor = managedQuery(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, selection, null, sortOrder);
-        mAdapter = new ContactListAdapter(this, cursor);
+        ArrayList<ContactEntry> entryArray = new ArrayList<ContactEntry>();
 
-        ArrayList<String> contacts = getIntent().getStringArrayListExtra("selected_contacts");
+        while (cursor.moveToNext()) {
+            ContactEntry entry = new ContactEntry();
+            entry.setName(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+            entry.setNumber(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
 
-        if (contacts != null) {
-            mAdapter.setSelectedContacts(contacts);
+            entryArray.add(entry);
         }
+        
+        mAdapter = new MixedContactListAdapter(this);
+        mAdapter.setContactsList(entryArray);
         
         setListAdapter(mAdapter);
     }
 
     public void addNewContact(String name, String number) {
-        mManualContacts.add(name + "&&" + number);
+        ContactEntry entry = new ContactEntry();
+        entry.setName(name);
+        entry.setNumber(number);
+
+        mAdapter.addContact(entry);
     }
     
     public void onFinishSelectingContacts(View view) {
-        ArrayList<String> contacts = mAdapter.getSelectedContacts();
+        ArrayList<ContactEntry> contacts = mAdapter.getSelectedContacts();
+        Intent intent = new Intent();
+        intent.putParcelableArrayListExtra("contacts", contacts);
 
-        if (contacts.size() != 0 || mManualContacts.size() != 0) {
-            Intent intent = new Intent();
-            intent.putStringArrayListExtra("selected_contacts", mAdapter.getSelectedContacts());
-            intent.putStringArrayListExtra("manual_contacts", mManualContacts);
-            
-            setResult(CONTACTS_SELECTED, intent);
-        } else {
-            setResult(CONTACTS_NOT_SELECTED);
-        }
-        
+        setResult(CONTACTS_SELECTED, intent);
         finish();
     }
 
