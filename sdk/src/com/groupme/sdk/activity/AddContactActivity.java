@@ -166,7 +166,13 @@ public class AddContactActivity extends ListActivity {
         
         mAdapter = new MixedContactListAdapter(this);
         mAdapter.setContactsList(entryArray);
-        
+
+        ArrayList<ContactEntry> selectedContacts = getIntent().getParcelableArrayListExtra("selected_contacts");
+
+        if (selectedContacts != null) {
+            mAdapter.addSelectedContacts(selectedContacts);
+        }
+
         setListAdapter(mAdapter);
     }
 

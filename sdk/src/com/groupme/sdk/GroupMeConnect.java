@@ -159,7 +159,7 @@ public class GroupMeConnect {
         request.start();
     }
 
-    public void createGroup(String groupName, ArrayList<String> members, GroupMeRequest.RequestListener listener) {
+    public void createGroup(String groupName, ArrayList<ContactEntry> members, GroupMeRequest.RequestListener listener) {
         GroupMeRequest request = new GroupMeRequest();
         request.setRequest(GroupMeRequest.CLIENT_GROUP, HttpUtils.METHOD_POST);
         request.setRequestListener(listener);
@@ -178,24 +178,12 @@ public class GroupMeConnect {
 
             JSONArray groupMembers = new JSONArray();
 
-            String[] projection = new String[] {
-                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-                ContactsContract.CommonDataKinds.Phone.NUMBER
-            };
+            for (ContactEntry member : members) {
+                JSONObject groupMember = new JSONObject();
+                groupMember.put("name", member.getName());
+                groupMember.put("phone_number", member.getNumber());
 
-            String selection = ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY + " = ?";
-
-            for (String member : members) {
-                Cursor cur = mContext.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, selection, new String[] { member }, null);
-
-                if (cur != null && cur.moveToNext()) {
-                    JSONObject groupMember = new JSONObject();
-                    groupMember.put("name", cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
-                    groupMember.put("phone_number", cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-
-                    groupMembers.put(groupMember);
-                    cur.close();
-                }
+                groupMembers.put(groupMember);
             }
 
             group.put("memberships", groupMembers);
@@ -436,6 +424,11 @@ public class GroupMeConnect {
         }
 
         public void onRequestCompleted(GroupMeRequest request) {
+            if (request.getResponse().equals("Unauthorized")) {
+                onRequestFailed(request);
+                return;
+            }
+
             GroupsSyncTask sync = new GroupsSyncTask(mGroupsCallback);
             sync.execute(request.mResponse);
         }

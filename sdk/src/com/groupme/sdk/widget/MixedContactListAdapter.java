@@ -58,6 +58,18 @@ public class MixedContactListAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void addSelectedContacts(ArrayList<ContactEntry> contacts) {
+        mSelectedContacts.addAll(contacts);
+
+        for (ContactEntry entry : contacts) {
+            if (!mContacts.contains(entry)) {
+                mContacts.add(entry);
+            }
+        }
+
+        notifyDataSetChanged();
+    }
+
     public int getCount() {
         return mContacts.size();
     }

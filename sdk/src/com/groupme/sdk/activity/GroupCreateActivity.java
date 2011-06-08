@@ -34,6 +34,7 @@ import android.widget.Button;
 import java.util.ArrayList;
 
 import android.widget.EditText;
+import com.groupme.sdk.ContactEntry;
 import com.groupme.sdk.GroupMeConnect;
 import com.groupme.sdk.GroupMeRequest;
 import com.groupme.sdk.R;
@@ -49,7 +50,7 @@ public class GroupCreateActivity extends ListActivity implements GroupContactAda
 	
 	public static final int DIALOG_CREATING = 0x1;
 	
-    ArrayList<String> mContacts;
+    ArrayList<ContactEntry> mContacts;
     GroupContactAdapter mAdapter;
 
     Button mCreateButton;
@@ -124,7 +125,7 @@ public class GroupCreateActivity extends ListActivity implements GroupContactAda
         }
 
         if (requestCode == AddContactActivity.REQUEST_CONTACTS_SELECT && resultCode == AddContactActivity.CONTACTS_SELECTED) {
-            mContacts = data.getStringArrayListExtra("selected_contacts");
+            mContacts = data.getParcelableArrayListExtra("contacts");
             Log.d(Constants.LOG_TAG, "Contacts selected: " + mContacts.size());
 
             setListData();
@@ -132,33 +133,8 @@ public class GroupCreateActivity extends ListActivity implements GroupContactAda
     }
 
     public void setListData() {
-        String[] projection = new String[] {
-            ContactsContract.CommonDataKinds.Phone._ID,
-            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-            ContactsContract.CommonDataKinds.Phone.NUMBER,
-            ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY
-        };
-
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-
-        for (String contact : mContacts) {
-            if (first) {
-                first = false;
-            } else {
-                sb.append(", ");
-            }
-
-            sb.append("'").append(contact).append("'");
-        }
-
-        String selection = ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY + " IN (" + sb.toString() + ")";
-        String sortOrder = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC LIMIT 1";
-
-        Cursor cursor = managedQuery(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, selection, null, sortOrder);
-        Log.d(Constants.LOG_TAG, "Cursor count: " + cursor.getCount());
-
-        mAdapter = new GroupContactAdapter(this, cursor);
+        mAdapter = new GroupContactAdapter(this);
+        mAdapter.addItems(mContacts);
         mAdapter.setOnContactRemovalListener(this);
         setListAdapter(mAdapter);
 
@@ -182,7 +158,7 @@ public class GroupCreateActivity extends ListActivity implements GroupContactAda
 
     public void onLaunchContactSelector(View view) {
         Intent intent = new Intent(this, AddContactActivity.class);
-        intent.putStringArrayListExtra("selected_contacts", mContacts);
+        intent.putParcelableArrayListExtra("selected_contacts", mContacts);
         startActivityForResult(intent, AddContactActivity.REQUEST_CONTACTS_SELECT);
     }
 
