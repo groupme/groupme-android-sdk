@@ -61,7 +61,6 @@ public class ContactListAdapter extends ResourceCursorAdapter {
         holder.contactTelephoneNumber.setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
 
         holder.contactSelected.setChecked(mSelectedContacts.contains(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY))));
-        holder.contactSelected.setContactId(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY)));
 
         Uri contact = ContentUris.withAppendedId(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, cursor.getLong(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY)));
         holder.contactBadge.assignContactUri(contact);
@@ -85,7 +84,7 @@ public class ContactListAdapter extends ResourceCursorAdapter {
     View.OnClickListener mCheckBoxListener = new View.OnClickListener() {
         public void onClick(View view) {
             ContactCheckBox check = (ContactCheckBox) view;
-            String key = check.getContactId();
+            String key = "";
             
             if (check.isChecked()) {
                 if (!mSelectedContacts.contains(key)) {

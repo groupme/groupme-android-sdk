@@ -20,7 +20,7 @@ import android.util.AttributeSet;
 import android.widget.CheckBox;
 
 public class ContactCheckBox extends CheckBox {
-    private String mContactId;
+    private int mContactId;
 
     public ContactCheckBox(Context context) {
         super(context);
@@ -30,11 +30,11 @@ public class ContactCheckBox extends CheckBox {
         super(context, attrs);
     }
 
-    public void setContactId(String id) {
+    public void setContactId(int id) {
         mContactId = id;    
     }
 
-    public String getContactId() {
+    public int getContactId() {
         return mContactId;
     }
 }

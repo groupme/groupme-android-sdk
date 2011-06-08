@@ -35,6 +35,8 @@
         android:layout_marginTop="10dip"
         android:layout_marginLeft="10dip"
         android:layout_marginRight="10dip"
+        android:inputType="phone"
+        android:singleLine="true"
         android:hint="@string/hint_contact_number" />
 
 </LinearLayout>
