@@ -34,10 +34,14 @@ import com.groupme.sdk.R;
 public class GroupDetailActivity extends Activity implements GroupMeRequest.RequestListener {
     public static final int DIALOG_COMPOSE_MESSAGE = 0x1;
     public static final int DIALOG_POSTING_MESSAGE = 0x2;
+
+    public static final String EXTRA_DEFAULT_MESSAGE = "com.groupme.sdk.extra.DEFAULT_MESSAGE";
     
     GroupMeConnect mConnect;
     GroupMeGroup mGroup;
-    
+
+    String mDefaultMessage;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +57,8 @@ public class GroupDetailActivity extends Activity implements GroupMeRequest.Requ
             mGroup = GroupMeGroup.fromJSON(groupJson);
             groupNameView.setText(mGroup.getTopic());
         }
+
+        mDefaultMessage = getIntent().getStringExtra(EXTRA_DEFAULT_MESSAGE);
     }
 
     @Override
@@ -65,6 +71,12 @@ public class GroupDetailActivity extends Activity implements GroupMeRequest.Requ
             builder.setTitle(R.string.dialog_title_post_message);
 
             View view = getLayoutInflater().inflate(R.layout.dialog_post, null, false);
+
+            if (mDefaultMessage != null) {
+                EditText composeView = (EditText) view.findViewById(R.id.dialog_post_entry);
+                composeView.setText(mDefaultMessage);
+            }
+
             builder.setView(view);
 
             builder.setPositiveButton(R.string.button_post_message, mDialogListener);
