@@ -121,10 +121,12 @@ public class GroupMeRequest {
         @Override
         protected void onPostExecute(String response) {
             GroupMeRequest request = mRequestRef.get();
-
+            
             if (request == null) {
                 return;
             }
+
+            request.setResponse(response);
 
             if (response == null && request.mListener != null) {
                 request.mListener.onRequestFailed(request);
