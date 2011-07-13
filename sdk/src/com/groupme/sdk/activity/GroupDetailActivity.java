@@ -26,8 +26,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.OperationApplicationException;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -81,7 +83,7 @@ public class GroupDetailActivity extends Activity implements GroupMeRequest.Requ
 
         mDefaultMessage = getIntent().getStringExtra(EXTRA_DEFAULT_MESSAGE);
 
-        /* check to see if we are allowed to read contacts. */
+        /* check to see if we are allowed to write contacts. */
         PackageManager pkgManager = getPackageManager();
         int access = pkgManager.checkPermission(Manifest.permission.WRITE_CONTACTS, getPackageName());
 
@@ -191,6 +193,18 @@ public class GroupDetailActivity extends Activity implements GroupMeRequest.Requ
             Context context = mContextRef.get();
 
             if (context == null) return null;
+
+            Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(params[1]));
+            String[] projection = new String[] { ContactsContract.PhoneLookup.DISPLAY_NAME };
+
+            Cursor cursor = context.getContentResolver().query(contactUri, projection, null, null, null);
+
+            if (cursor.moveToNext()) {
+                cursor.close();
+                return contactUri.toString();
+            }
+
+            cursor.close();
 
             Bitmap avatar = BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
