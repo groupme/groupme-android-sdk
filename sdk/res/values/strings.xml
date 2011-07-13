@@ -29,7 +29,9 @@
     <string name="button_cancel">Cancel</string>
     <string name="button_new_contact">Add New Contact</string>
     <string name="button_add">Add</string>
-    
+    <string name="button_add_address_book">Add to Address Book</string>
+    <string name="button_added_to_address_book">Added to Address Book</string>
+
     <string name="title_enter_phone_number">Enter Your Number</string>
     <string name="title_enter_pin_number">Enter The PIN Number</string>
     <string name="title_create_new_group">Create New Group</string>

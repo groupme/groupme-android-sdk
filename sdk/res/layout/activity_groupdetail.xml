@@ -84,6 +84,17 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:onClick="openGroupInGroupMe" />
+
+        <Button
+            android:id="@+id/btn_add_address_book"
+            android:text="@string/button_add_address_book"
+            android:background="@drawable/btn_special"
+            style="@style/ShadowedText.Light"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="saveNumberInAddressBook" />
         
     </LinearLayout>
     

@@ -15,17 +15,33 @@
  */
 package com.groupme.sdk.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.OperationApplicationException;
+import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
-
+import android.os.RemoteException;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.CommonDataKinds.StructuredName;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+
 import com.groupme.sdk.GroupMeConnect;
 import com.groupme.sdk.GroupMeGroup;
 import com.groupme.sdk.GroupMeRequest;
@@ -59,6 +75,15 @@ public class GroupDetailActivity extends Activity implements GroupMeRequest.Requ
         }
 
         mDefaultMessage = getIntent().getStringExtra(EXTRA_DEFAULT_MESSAGE);
+
+        /* check to see if we are allowed to read contacts. */
+        PackageManager pkgManager = getPackageManager();
+        int access = pkgManager.checkPermission(Manifest.permission.WRITE_CONTACTS, getPackageName());
+
+        if (access != PackageManager.PERMISSION_GRANTED) {
+            Button addButton = (Button) findViewById(R.id.btn_add_address_book);
+            addButton.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -125,6 +150,16 @@ public class GroupDetailActivity extends Activity implements GroupMeRequest.Requ
         showDialog(DIALOG_COMPOSE_MESSAGE);
     }
 
+    public void saveNumberInAddressBook(View view) {
+        Button addButton = (Button) view;
+
+        addButton.setEnabled(false);
+        addButton.setText(R.string.button_added_to_address_book);
+
+        AddContactTask task = new AddContactTask(addButton);
+        task.execute(mGroup.getTopic(), mGroup.getGroupNumber());
+    }
+
     public void onRequestStarted(GroupMeRequest request) {
         
     }
@@ -135,5 +170,78 @@ public class GroupDetailActivity extends Activity implements GroupMeRequest.Requ
 
     public void onRequestCompleted(GroupMeRequest request) {
         removeDialog(DIALOG_POSTING_MESSAGE);
+    }
+
+    static class AddContactTask extends AsyncTask<String, Void, String> {
+        private WeakReference<Context> mContextRef;
+        private WeakReference<Button> mButtonRef;
+
+        public AddContactTask(Button addButton) {
+            mContextRef = new WeakReference<Context>(addButton.getContext());
+            mButtonRef = new WeakReference<Button>(addButton);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            Context context = mContextRef.get();
+
+            if (context == null) return null;
+
+            ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+            int rawContactInsertIndex = ops.size();
+
+            ops.add(ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI)
+                    .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null)
+                    .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, null)
+                    .build());
+
+            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactInsertIndex)
+                    .withValue(ContactsContract.Data.MIMETYPE, Phone.CONTENT_ITEM_TYPE)
+                    .withValue(Phone.NUMBER, params[1])
+                    .build());
+
+            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactInsertIndex)
+                    .withValue(ContactsContract.Data.MIMETYPE, StructuredName.CONTENT_ITEM_TYPE)
+                    .withValue(StructuredName.DISPLAY_NAME, params[0])
+                    .build());
+
+            boolean success = true;
+
+            try {
+                ContentProviderResult[] results = context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
+
+                for (ContentProviderResult result : results) {
+                    if (result.uri == null) {
+                        success = false;                        
+                    }
+                }
+
+                if (success) {
+                    return results[0].uri.toString();
+                }
+            } catch (OperationApplicationException e) {
+                Log.e("GroupMeSDK", "Error saving group to contacts: " + e.toString());
+                return null;
+            } catch (RemoteException e) {
+                Log.e("GroupMeSDK", "Error saving group to contacts: " + e.toString());
+                return null;
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String uri) {
+            Button addButton = mButtonRef.get();
+
+            if (addButton == null) return;
+
+            if (uri == null) {
+                addButton.setText(R.string.button_add_address_book);
+                addButton.setEnabled(true);
+            }
+        }
     }
 }
