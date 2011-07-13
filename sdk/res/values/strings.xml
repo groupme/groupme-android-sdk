@@ -32,6 +32,8 @@
     <string name="button_add_address_book">Add to Address Book</string>
     <string name="button_added_to_address_book">Added to Address Book</string>
 
+    <string name="contact_groupme_label">GroupMe Group</string>
+
     <string name="title_enter_phone_number">Enter Your Number</string>
     <string name="title_enter_pin_number">Enter The PIN Number</string>
     <string name="title_create_new_group">Create New Group</string>

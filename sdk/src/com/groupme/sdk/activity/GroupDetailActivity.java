@@ -26,11 +26,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.OperationApplicationException;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.CommonDataKinds.Photo;
+import android.provider.ContactsContract.CommonDataKinds.Note;
 import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.util.Log;
 import android.view.View;
@@ -39,6 +43,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
@@ -187,6 +192,10 @@ public class GroupDetailActivity extends Activity implements GroupMeRequest.Requ
 
             if (context == null) return null;
 
+            Bitmap avatar = BitmapFactory.decodeResource(context.getResources(), R.drawable.default_avatar);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            boolean compressed = avatar.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
             ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
             int rawContactInsertIndex = ops.size();
 
@@ -205,6 +214,18 @@ public class GroupDetailActivity extends Activity implements GroupMeRequest.Requ
                     .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactInsertIndex)
                     .withValue(ContactsContract.Data.MIMETYPE, StructuredName.CONTENT_ITEM_TYPE)
                     .withValue(StructuredName.DISPLAY_NAME, params[0])
+                    .build());
+
+            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactInsertIndex)
+                    .withValue(ContactsContract.Data.MIMETYPE, Photo.CONTENT_ITEM_TYPE)
+                    .withValue(Photo.PHOTO, stream.toByteArray())
+                    .build());
+
+            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactInsertIndex)
+                    .withValue(ContactsContract.Data.MIMETYPE, Note.CONTENT_ITEM_TYPE)
+                    .withValue(Note.NOTE, context.getString(R.string.contact_groupme_label))
                     .build());
 
             boolean success = true;
