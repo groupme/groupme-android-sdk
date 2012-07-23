@@ -92,6 +92,11 @@ public class GroupDetailActivity extends Activity implements GroupMeRequest.Requ
             addButton.setVisibility(View.GONE);
         }
     }
+    
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        return onCreateDialog(id, null);
+    }
 
     @Override
     protected Dialog onCreateDialog(int id, Bundle args) {

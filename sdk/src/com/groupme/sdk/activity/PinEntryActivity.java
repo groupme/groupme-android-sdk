@@ -66,6 +66,11 @@ public class PinEntryActivity extends Activity implements GroupMeRequest.Request
         str.setSpan(new UnderlineSpan(), 0, str.length(), 0);
         mAlternateButton.setText(str);
     }
+    
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        return onCreateDialog(id, null);
+    }
 
     @Override
     protected Dialog onCreateDialog(int id, Bundle args) {

@@ -85,6 +85,13 @@ public class AddContactActivity extends ListActivity {
         mManualContacts = new ArrayList<String>();
     }
 
+    
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        return onCreateDialog(id, null);
+    }
+
+
     @Override
     protected Dialog onCreateDialog(int id, Bundle args) {
         AlertDialog.Builder builder;
