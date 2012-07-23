@@ -26,11 +26,11 @@ import org.apache.http.client.HttpClient;
 import java.lang.ref.WeakReference;
 
 public class GroupMeRequest {
-    public static final String CLIENT_AUTHORIZE = Constants.BASE_API.concat("/clients/tokens");
-    public static final String CLIENT_GROUP = Constants.BASE_API.concat("/clients/groups");
-    public static final String CLIENT_LINES = Constants.BASE_API.concat("/clients/groups/%s/lines");
-    public static final String CLIENT_CONFERENCE = Constants.BASE_API.concat("/clients/groups/%s/conferences");
-	public static final String CLIENT_USERS = Constants.BASE_API.concat("/clients/users/%s");
+    public static final String CLIENT_AUTHORIZE = Constants.BASE_API_HTTPS.concat("/clients/tokens");
+    public static final String CLIENT_GROUP = Constants.BASE_API_HTTPS.concat("/clients/groups");
+    public static final String CLIENT_LINES = Constants.BASE_API_HTTPS.concat("/clients/groups/%s/lines");
+    public static final String CLIENT_CONFERENCE = Constants.BASE_API_HTTPS.concat("/clients/groups/%s/conferences");
+	public static final String CLIENT_USERS = Constants.BASE_API_HTTPS.concat("/clients/users/%s");
 	
     Bundle mParams;
     String mRequest;

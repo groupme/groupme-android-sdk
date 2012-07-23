@@ -77,6 +77,8 @@ public class HttpUtils {
     public static InputStream openStream(HttpClient client, String url, int method, String body, Bundle params, Bundle headers) throws HttpResponseException {
         HttpResponse response;
         InputStream in = null;
+        
+        Log.v("HttpUtils", "URL = " + url);
 
         try {
             switch (method) {

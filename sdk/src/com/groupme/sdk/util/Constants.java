@@ -19,6 +19,6 @@ public class Constants {
     public static final String LOG_TAG = "groupme-client-lib";
     public static final String UTF_8 = "utf-8";
 
-    public static final String BASE_API = "http://api.groupme.com";
+//    public static final String BASE_API = "http://api.groupme.com";
     public static final String BASE_API_HTTPS = "https://api.groupme.com";
 }
