@@ -86,7 +86,8 @@
             android:hint="@string/hint_pin_number"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="5dp" 
+            android:inputType="phone"/>
 
         <Button
             android:id="@+id/not_number_button"
